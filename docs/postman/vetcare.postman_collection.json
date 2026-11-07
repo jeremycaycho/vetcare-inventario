@@ -1,0 +1,2533 @@
+{
+  "info": {
+    "name": "VetCare Inventario - Pruebas PC2/PC3",
+    "description": "Ejecutar con Collection Runner en orden. Requiere la API en http://localhost:8080 y la BD recién creada con los datos iniciales.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "sufijo",
+      "value": ""
+    },
+    {
+      "key": "tokenAdmin",
+      "value": ""
+    },
+    {
+      "key": "tokenEncargado",
+      "value": ""
+    },
+    {
+      "key": "tokenVentas",
+      "value": ""
+    },
+    {
+      "key": "tokenGerente",
+      "value": ""
+    },
+    {
+      "key": "catId",
+      "value": ""
+    },
+    {
+      "key": "provId",
+      "value": ""
+    },
+    {
+      "key": "prodId",
+      "value": ""
+    },
+    {
+      "key": "fechaVenc60",
+      "value": ""
+    },
+    {
+      "key": "fechaVenc20",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00 Salud",
+      "item": [
+        {
+          "name": "P01 GET /api/ping (público)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"estado ok\", function () { pm.expect(pm.response.json().estado).to.eql(\"ok\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ping",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ping"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 Autenticación",
+      "item": [
+        {
+          "name": "P02 Login admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Devuelve token\", function () { pm.expect(pm.response.json().token).to.be.a(\"string\"); });",
+                  "pm.collectionVariables.set(\"tokenAdmin\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin123*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P03 Login encargado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Devuelve token\", function () { pm.expect(pm.response.json().token).to.be.a(\"string\"); });",
+                  "pm.collectionVariables.set(\"tokenEncargado\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"encargado\",\n  \"password\": \"Encargado123*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P04 Login ventas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Devuelve token\", function () { pm.expect(pm.response.json().token).to.be.a(\"string\"); });",
+                  "pm.collectionVariables.set(\"tokenVentas\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ventas\",\n  \"password\": \"Ventas123*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P05 Login gerente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Devuelve token\", function () { pm.expect(pm.response.json().token).to.be.a(\"string\"); });",
+                  "pm.collectionVariables.set(\"tokenGerente\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"gerente\",\n  \"password\": \"Gerente123*\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P06 Login con clave incorrecta (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P07 Login con cuerpo vacío (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"\",\n  \"password\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Categorías",
+      "item": [
+        {
+          "name": "P08 GET categorías sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P09 GET categorías con token (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Lista con datos sembrados\", function () { pm.expect(pm.response.json().length).to.be.at.least(6); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P10 POST categoría (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"sufijo\", String(Date.now()).slice(-9));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Header Location\", function () { pm.expect(pm.response.headers.get(\"Location\")).to.include(\"/api/categorias/\"); });",
+                  "pm.collectionVariables.set(\"catId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cat Prueba {{sufijo}}\",\n  \"descripcion\": \"Creada por Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P11 POST categoría duplicada (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cat Prueba {{sufijo}}\",\n  \"descripcion\": \"duplicada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P12 POST categoría sin nombre (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });",
+                  "pm.test(\"Detalle del campo nombre\", function () { pm.expect(pm.response.json().detalles).to.have.property(\"nombre\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"\",\n  \"descripcion\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P13 GET categoría por id (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/{{catId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "{{catId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P14 GET categoría inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P15 PUT categoría (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Nombre actualizado\", function () { pm.expect(pm.response.json().nombre).to.include(\"editada\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/{{catId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "{{catId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cat Prueba {{sufijo}} editada\",\n  \"descripcion\": \"Editada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P16 POST categoría con rol VENTAS (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", function () { pm.response.to.have.status(403); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"No permitida\",\n  \"descripcion\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Proveedores",
+      "item": [
+        {
+          "name": "P17 POST proveedor (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"sufijo\", String(Date.now()).slice(-9));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"provId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razonSocial\": \"Proveedor Prueba {{sufijo}}\",\n  \"ruc\": \"20{{sufijo}}\",\n  \"telefono\": \"999888777\",\n  \"correo\": \"prueba@proveedor.example\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P18 POST proveedor RUC inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razonSocial\": \"Mal RUC\",\n  \"ruc\": \"123\",\n  \"telefono\": \"1\",\n  \"correo\": \"a@b.example\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P19 POST proveedor RUC duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razonSocial\": \"Otro\",\n  \"ruc\": \"20{{sufijo}}\",\n  \"telefono\": \"1\",\n  \"correo\": \"a@b.example\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P20 GET proveedores (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P21 GET proveedor inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P22 PUT proveedor (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores/{{provId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores",
+                "{{provId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razonSocial\": \"Proveedor Prueba editado\",\n  \"ruc\": \"20{{sufijo}}\",\n  \"telefono\": \"111222333\",\n  \"correo\": \"nuevo@proveedor.example\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Productos",
+      "item": [
+        {
+          "name": "P23 POST producto (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"prodId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PM-{{sufijo}}\",\n  \"nombre\": \"Producto Prueba\",\n  \"unidadMedida\": \"UND\",\n  \"precio\": 25.5,\n  \"stockMinimo\": 10,\n  \"idCategoria\": {{catId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P24 POST producto código duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PM-{{sufijo}}\",\n  \"nombre\": \"Duplicado\",\n  \"unidadMedida\": \"UND\",\n  \"precio\": 1,\n  \"stockMinimo\": 1,\n  \"idCategoria\": {{catId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P25 POST producto precio negativo (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NEG-{{sufijo}}\",\n  \"nombre\": \"Negativo\",\n  \"unidadMedida\": \"UND\",\n  \"precio\": -5,\n  \"stockMinimo\": 1,\n  \"idCategoria\": {{catId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P26 POST producto con categoría inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"CAT-{{sufijo}}\",\n  \"nombre\": \"Sin categoría\",\n  \"unidadMedida\": \"UND\",\n  \"precio\": 1,\n  \"stockMinimo\": 1,\n  \"idCategoria\": 999999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P27 GET productos (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P28 GET productos filtrados por nombre (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Encuentra el producto\", function () { pm.expect(pm.response.json().length).to.be.at.least(1); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos?nombre=Prueba",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "nombre",
+                  "value": "Prueba"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "P29 GET producto por id (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{prodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{prodId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P30 PUT producto (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{prodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{prodId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PM-{{sufijo}}\",\n  \"nombre\": \"Producto Prueba editado\",\n  \"unidadMedida\": \"UND\",\n  \"precio\": 30.0,\n  \"stockMinimo\": 10,\n  \"idCategoria\": {{catId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P31 DELETE categoría en uso (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/{{catId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "{{catId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Movimientos (entradas, salidas FEFO)",
+      "item": [
+        {
+          "name": "P32 Entrada lote A vence en 60 días (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = new Date(); d.setDate(d.getDate() + 60);",
+                  "pm.collectionVariables.set(\"fechaVenc60\", d.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"LA-{{sufijo}}\",\n  \"fechaVencimiento\": \"{{fechaVenc60}}\",\n  \"cantidad\": 20,\n  \"observacion\": \"Lote A\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P33 Entrada lote B vence en 20 días (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = new Date(); d.setDate(d.getDate() + 20);",
+                  "pm.collectionVariables.set(\"fechaVenc20\", d.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"LB-{{sufijo}}\",\n  \"fechaVencimiento\": \"{{fechaVenc20}}\",\n  \"cantidad\": 5,\n  \"observacion\": \"Lote B\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P34 Entrada con rol VENTAS (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", function () { pm.response.to.have.status(403); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"LX\",\n  \"fechaVencimiento\": \"2099-01-01\",\n  \"cantidad\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P35 Entrada lote repetido (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"LA-{{sufijo}}\",\n  \"fechaVencimiento\": \"{{fechaVenc60}}\",\n  \"cantidad\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P36 Entrada con fecha vencida (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"LV-{{sufijo}}\",\n  \"fechaVencimiento\": \"2020-01-01\",\n  \"cantidad\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P37 Entrada con cantidad 0 (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/entradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "entradas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"idProveedor\": {{provId}},\n  \"codigoLote\": \"L0-{{sufijo}}\",\n  \"fechaVencimiento\": \"2099-01-01\",\n  \"cantidad\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P38 Salida VENTA de 8 unidades, consume lote B primero (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Se tocaron 2 lotes (FEFO)\", function () { pm.expect(pm.response.text()).to.include(\"LB-\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"cantidad\": 8,\n  \"motivo\": \"VENTA\",\n  \"observacion\": \"Prueba FEFO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P39 Salida con motivo COMPRA (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"cantidad\": 1,\n  \"motivo\": \"COMPRA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P40 Salida con stock insuficiente (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });",
+                  "pm.test(\"detalles.stockActual = 17\", function () { pm.expect(pm.response.json().detalles.stockActual).to.eql(17); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"cantidad\": 9999,\n  \"motivo\": \"VENTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P41 Salida de producto inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": 999999,\n  \"cantidad\": 1,\n  \"motivo\": \"VENTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P42 GET movimientos con GERENTE (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Hay movimientos\", function () { pm.expect(pm.response.json().length).to.be.at.least(3); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P43 GET movimientos con VENTAS (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", function () { pm.response.to.have.status(403); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Inventario, alertas y reportes",
+      "item": [
+        {
+          "name": "P44 GET stock (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Stock del producto de prueba = 17\", function () { const p = pm.response.json().find(x => x.idProducto == pm.collectionVariables.get(\"prodId\")); pm.expect(p.stockActual).to.eql(17); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenVentas}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventario/stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventario",
+                "stock"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P45 Salida de 8 más para dejar stock bajo (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"cantidad\": 8,\n  \"motivo\": \"MERMA\",\n  \"observacion\": \"Para alerta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P46 GET alertas de stock bajo (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Producto aparece en alerta (9 < 10)\", function () { const p = pm.response.json().find(x => x.idProducto == pm.collectionVariables.get(\"prodId\")); pm.expect(p).to.not.be.undefined; pm.expect(p.faltante).to.eql(1); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alertas/stock-bajo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alertas",
+                "stock-bajo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P47 GET lotes por vencer 30 días (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lotes/por-vencer?dias=30",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lotes",
+                "por-vencer"
+              ],
+              "query": [
+                {
+                  "key": "dias",
+                  "value": "30"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "P48 GET lotes por vencer días inválidos (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lotes/por-vencer?dias=999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lotes",
+                "por-vencer"
+              ],
+              "query": [
+                {
+                  "key": "dias",
+                  "value": "999"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "P49 GET reporte existencias GERENTE (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reportes/existencias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "existencias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P50 GET reporte existencias ENCARGADO (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 403\", function () { pm.response.to.have.status(403); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reportes/existencias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "existencias"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Limpieza y errores de ruta",
+      "item": [
+        {
+          "name": "P51 DELETE producto con stock (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{prodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{prodId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P52 Salida AJUSTE para vaciar el stock (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Stock queda en 0\", function () { pm.expect(pm.response.json().stockActual).to.eql(0); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenEncargado}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/movimientos/salidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "movimientos",
+                "salidas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{prodId}},\n  \"cantidad\": 9,\n  \"motivo\": \"AJUSTE\",\n  \"observacion\": \"Vaciar\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "P53 DELETE producto sin stock (204, baja lógica)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{prodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{prodId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P54 GET producto desactivado (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{prodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{prodId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P55 DELETE proveedor (204, baja lógica)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/proveedores/{{provId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "proveedores",
+                "{{provId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P56 GET ruta inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/no-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "no-existe"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P57 Método no permitido (405)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 405\", function () { pm.response.to.have.status(405); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAdmin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "P58 Token falso (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Cuerpo de error unificado\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"status\"); pm.expect(j).to.have.property(\"mensaje\"); pm.expect(j).to.have.property(\"ruta\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer token.falso.123"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
